@@ -1,0 +1,28 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+# -----------------------------------------------------------------------------
+# Library
+# -----------------------------------------------------------------------------
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "kncloudevents.go",
+    ],
+    importpath = "github.com/celsosantos/http-grpc-mux/kncloudevents",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_cloudevents_sdk_go//:go_default_library",
+        "@com_github_cloudevents_sdk_go//pkg/cloudevents/transport/http:go_default_library",
+    ],
+)
+
+# -----------------------------------------------------------------------------
+# Test definitions
+# -----------------------------------------------------------------------------
+
+go_test(
+    name = "go_default_test",
+    srcs = ["kncloudevents_test.go"],
+    embed = [":go_default_library"],
+)

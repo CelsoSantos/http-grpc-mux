@@ -1,0 +1,40 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: transforms-html
+  namespace: gloo-system
+  labels:
+    serving.knative.dev/visibility: cluster-local
+spec:
+  virtualHost:
+    routes:
+      - matcher:
+          methods:
+            - GET
+          prefix: /render/
+        routeAction:
+          single:
+            destinationSpec:
+              grpc:
+                function: Render
+                parameters:
+                  path: /render/{documentId}
+                package: api
+                service: HtmlService
+            upstream:
+              name: CHANGEME
+              namespace: gloo-system
+        routePlugins:
+          headerManipulation:
+            # add headers to all responses
+            # returned by this route
+            responseHeadersToAdd:
+              - header:
+                  key: Content-Type
+                  value: text/html
+          transformations:
+            responseTransformation:
+              transformationTemplate:
+                body:
+                  text: "{{ document }}"
+                  # text: "<head><title>Test</title></head><body><div><p>Hello {{ document }}</p> </div> </body>"
