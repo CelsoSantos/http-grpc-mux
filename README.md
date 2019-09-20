@@ -1,4 +1,4 @@
-# Knative Serving + gRPC + Gloo Transforms + HTML output
+# Knative Serving + gRPC + Knative Eventing + Gloo Transforms + HTML output
 
 > **NOTE:** This repo and documentation is still under construction so errors are likely to be present
 
