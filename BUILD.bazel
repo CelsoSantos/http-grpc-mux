@@ -27,11 +27,11 @@ go_library(
     deps = [
         "//api:api_grpc_library",
         "//libs/kncloudevents:go_default_library",
+        "@com_github_cloudevents_sdk_go//:go_default_library",
         "@com_github_soheilhy_cmux//:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_google_grpc//reflection:go_default_library",
         "@org_golang_x_net//context:go_default_library",
-        "@com_github_cloudevents_sdk_go//:go_default_library",
     ],
 )
 
@@ -73,7 +73,7 @@ container_push(
     format = "Docker",
     image = ":mux_image_build",
     registry = "index.docker.io",
-    repository = "celsosantos/http-grpc-mux",
+    repository = "evooq/http-grpc-mux",
     tag = "latest",
 )
 
