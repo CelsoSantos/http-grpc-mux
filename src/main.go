@@ -22,14 +22,6 @@ import (
 var (
 	sa  = "/etc/config/sa.json"
 	ctx = context.Background()
-
-	// Make Channel to receive end-result
-	// htmlChannel = make(chan string)
-
-	// // Get Kakfa Cluster config values
-	// kafkaBrokerUrls = []string{os.Getenv("bootstrapServers")}
-	// clientID = os.Getenv("clientId")
-	// topic = os.Getenv("topic")
 )
 
 type htmlService struct{}
@@ -43,10 +35,7 @@ func (c *htmlService) Render(ctx context.Context, in *pb.HtmlRequest) (*pb.HtmlR
 
 	htmlTemplate := string(contentBytes)
 
-	// htmlDocument := <-htmlChannel
-	// log.Println(htmlDocument)
-
-	return &pb.HtmlResponse{Document: htmlTemplate}, nil
+	return &pb.HtmlResponse{Status: 200, Document: htmlTemplate}, nil
 }
 
 func render(event cloudevents.Event) {
@@ -55,13 +44,6 @@ func render(event cloudevents.Event) {
 	if event.Data == nil {
 		log.Fatalf("Missing event Rendered document.")
 	}
-
-	// htmlDocument, err := sdr2html.GenerateHTMLEvent(&event)
-	// if err != nil {
-	// 	log.Fatalf("Unable to generate the document html: %v", err)
-	// }
-
-	// htmlChannel <- "Hello Channel!"
 }
 
 func main() {
@@ -104,8 +86,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to create client, ", err)
 	}
-
-	// defer close(htmlChannel)
 
 	// *************
 	// Start Listeners

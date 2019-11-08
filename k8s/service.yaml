@@ -13,6 +13,3 @@ spec:
               value: "8080"
             - name: TEMPLATE
               value: "simple"
-          ports:
-            - name: h2c
-              containerPort: 8080

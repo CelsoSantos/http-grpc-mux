@@ -7,7 +7,8 @@ message HtmlRequest {
 }
 
 message HtmlResponse {
-  string document = 1;
+	int32 status = 1;
+  string document = 2;
 }
 
 service HtmlService {
