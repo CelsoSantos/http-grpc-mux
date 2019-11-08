@@ -25,16 +25,27 @@ spec:
               name: CHANGEME
               namespace: gloo-system
         routePlugins:
-          headerManipulation:
-            # add headers to all responses
-            # returned by this route
-            responseHeadersToAdd:
-              - header:
-                  key: Content-Type
-                  value: text/html
+          # headerManipulation:
+          #   # add headers to all responses
+          #   # returned by this route
+          #   responseHeadersToAdd:
+          #     - header:
+          #         key: Content-Type
+          #         value: text/html
+          #     - header:
+          #         key: Location
+          #         value: 'https://www.google.com/'
+          #     - header:
+          #         key: status
+          #         value: '201'
           transformations:
             responseTransformation:
               transformationTemplate:
+                headers:
+                  ":status":
+                    text: "201"
+                  location:
+                    text: "https://www.google.com/"
                 body:
                   text: "{{ document }}"
                   # text: "<head><title>Test</title></head><body><div><p>Hello {{ document }}</p> </div> </body>"

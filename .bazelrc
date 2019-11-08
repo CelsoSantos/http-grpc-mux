@@ -1,0 +1,4 @@
+# Project-specific Bazel options.
+
+build --incompatible_disable_deprecated_attr_params=false --incompatible_disallow_dict_plus=false --incompatible_use_python_toolchains=false
+run --incompatible_disable_deprecated_attr_params=false --incompatible_disallow_dict_plus=false --incompatible_use_python_toolchains=false
