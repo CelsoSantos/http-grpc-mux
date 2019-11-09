@@ -1,1 +1,2 @@
---
+build --incompatible_disable_deprecated_attr_params=false --incompatible_disallow_dict_plus=false --incompatible_use_python_toolchains=false --action_env=DOCKER_REGISTRY_IMAGE_NAME=REPO_NAME
+run --incompatible_disable_deprecated_attr_params=false --incompatible_disallow_dict_plus=false --incompatible_use_python_toolchains=false --action_env=DOCKER_REGISTRY_IMAGE_NAME=REPO_NAME

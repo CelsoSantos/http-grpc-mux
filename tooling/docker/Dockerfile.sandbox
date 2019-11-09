@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 
 ARG ARG_PROJECT="transforms"
-ARG ARG_BAZEL_VERSION=0.28.0
+ARG ARG_BAZEL_VERSION=0.29.1
 ARG ARG_BAZEL_BUILDS=/var/bazel/builds
 ARG ARG_SANDBOX_LINUX=ubuntu:18.04
 
@@ -38,10 +38,12 @@ FROM base as sandbox
 
 ARG ARG_BAZEL_VERSION
 ARG ARG_BAZEL_BUILDS
+ARG ARG_DOCKER_REGISTRY_IMAGE_NAME
 
 # Environment variables 
 ENV BAZEL_BUILDS ${ARG_BAZEL_BUILDS}
 ENV BAZEL_VERSION ${ARG_BAZEL_VERSION}
+ENV DOCKER_REGISTRY_IMAGE_NAME ${ARG_DOCKER_REGISTRY_IMAGE_NAME}
 
 # Install basic packages
 RUN apt-get update \

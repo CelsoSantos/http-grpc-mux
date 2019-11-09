@@ -44,6 +44,8 @@ glooctl get virtualservices
 
 For your convenience, there is a `Makefile` available that provides a sandboxed build environment (Docker container) complete with Bazel and Gazelle, that is capable of building the required binaries and Docker images to test and deploy the services into a K8s cluster.
 
+In order to be able to use `make` you will have to create a `Makefile.conf` file. Use the provided `Makefile.conf.sample` to get you started. Once done, you can executing `make` commands.
+
 To setup the build environment just run:
 
 ```bash
@@ -54,6 +56,28 @@ To use the build environment use
 
 ```bash
 make work
+```
+
+## Using Bazel
+
+Bazel is the build system/platform used to build libraries, binaries, container images and packaging everything for deployment. The provided sandbox already has bazel installed so you can just start using it.
+
+### - Building the binary
+
+On the sandbox project root directory (`/workspace`) execute the following command:
+
+```bash
+bazel build //:mux_function
+```
+
+### - Building the Docker Container
+
+> __NOTE__: In order to be able to push images, there must exist a `config.json` file in the `tooling/docker` directory with your Docker credentials. Use the `tooling/docker/registry.config.json.sample` as a starting point to create your own credentials file.
+
+To use Bazel to build and push a Docker image execute this command:
+
+```bash
+bazel run //:mux_image_push --define DOCKER_REGISTRY_IMAGE_NAME=$DOCKER_REGISTRY_IMAGE_NAME
 ```
 
 ### Repo Structure

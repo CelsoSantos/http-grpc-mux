@@ -32,7 +32,7 @@ DEBUG_LINUX := golang:1.12.6-alpine3.9
 BAZEL_BUILDS := "/var/bazel/builds"
 
 # Bazel building tool version
-BAZEL_VERSION := 0.26.1
+BAZEL_VERSION := 0.29.1
 
 # Go language version
 GOLANG_VERSION := 1.12.4

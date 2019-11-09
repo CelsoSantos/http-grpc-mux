@@ -69,6 +69,7 @@ define setup_development_sandbox
 		--build-arg ARG_SANDBOX_LINUX=$(SANDBOX_LINUX) \
 		--build-arg ARG_BAZEL_VERSION=$(BAZEL_VERSION) \
 		--build-arg ARG_BAZEL_BUILDS=$(BAZEL_BUILDS) \
+		--build-arg ARG_DOCKER_REGISTRY_IMAGE_NAME=$(DOCKER_REGISTRY_IMAGE_NAME) \
 		--file=tooling/docker/Dockerfile.sandbox \
 		tooling/docker
 endef
@@ -79,6 +80,7 @@ define start_development_sandbox
 	@docker container run \
 		--name $(SANDBOX_CONTAINER_NAME) \
 		--hostname $(SANDBOX_IMAGE_NAME) \
+		--env ARG_DOCKER_REGISTRY_IMAGE_NAME=$(DOCKER_REGISTRY_IMAGE_NAME) \
 		-it \
 		--rm \
 		--volume `pwd`/builds/bazel:$(BAZEL_BUILDS) \

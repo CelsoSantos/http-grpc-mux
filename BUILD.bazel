@@ -73,7 +73,7 @@ container_push(
     format = "Docker",
     image = ":mux_image_build",
     registry = "index.docker.io",
-    repository = "evooq/http-grpc-mux",
+    repository = "$(DOCKER_REGISTRY_IMAGE_NAME)",
     tag = "latest",
 )
 

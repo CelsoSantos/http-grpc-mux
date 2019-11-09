@@ -20,8 +20,10 @@ import (
 )
 
 var (
-	sa  = "/etc/config/sa.json"
 	ctx = context.Background()
+
+	// Make Channel to receive end-result
+	htmlChannel = make(chan string)
 )
 
 type htmlService struct{}
@@ -44,6 +46,8 @@ func render(event cloudevents.Event) {
 	if event.Data == nil {
 		log.Fatalf("Missing event Rendered document.")
 	}
+
+	htmlChannel <- "Hello Channel!"
 }
 
 func main() {
@@ -82,10 +86,12 @@ func main() {
 	// *************
 
 	// Declare new CloudEvents Receiver
-	c, err := kncloudevents.NewDefaultClient()
+	c, err := kncloudevents.NewDefaultClient(httpLis)
 	if err != nil {
 		log.Fatal("Failed to create client, ", err)
 	}
+
+	defer close(htmlChannel)
 
 	// *************
 	// Start Listeners
