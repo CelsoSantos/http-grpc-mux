@@ -1,0 +1,49 @@
+{
+	"name": "Go",
+	"dockerFile": "Dockerfile.go",
+	"appPort": 9000,
+	"extensions": [
+		"ms-vscode.go",
+		"bazelbuild.vscode-bazel",
+		"yzhang.markdown-all-in-one",
+		"davidanson.vscode-markdownlint",
+		"zxh404.vscode-proto3"
+	],
+	"runArgs": [
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined",
+		// Mount your .ssh folder to /root/.ssh-localhost so we can copy its contents
+		"-v",
+		"${env:HOME}${env:USERPROFILE}/.ssh:/root/.ssh-localhost:ro",
+	],
+	// Copy the contents to the correct location and set permissions
+	"postCreateCommand": "mkdir -p ~/.ssh && cp -r ~/.ssh-localhost/* ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
+	"settings": {
+		"go.gopath": "/go",
+		"go.inferGopath": true,
+		"go.useLanguageServer": true,
+		"go.buildOnSave": "off",
+		"go.formatTool": "gofmt",
+		"go.gocodePackageLookupMode": "bzl",
+		"go.liveErrors": {
+			"enabled": true,
+			"delay": 500
+		},
+		"go.delveConfig": {
+			"dlvLoadConfig": {
+				"followPointers": true,
+				"maxVariableRecurse": 1,
+				"maxStringLen": 64,
+				"maxArrayValues": 64,
+				"maxStructFields": -1
+			},
+			"apiVersion": 2,
+			"showGlobalVariables": true
+		},
+		"bazel.buildifierExecutable": "/go/bin/buildifier",
+		"bazel.executable": "/usr/bin/bazel",
+		"bazel.buildifierFixOnFormat": false,
+		"bazel.showExtensionLog": true
+	}
+}
