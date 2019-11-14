@@ -2,27 +2,41 @@ apiVersion: gateway.solo.io/v1
 kind: VirtualService
 metadata:
   name: transforms-html
-  namespace: gloo-system
-  labels:
-    serving.knative.dev/visibility: cluster-local
+  namespace: transforms-demo
 spec:
+  # ssl_config:
+  #   secret_ref:
+  #     name: wildcard
+  #     namespace: default
   virtualHost:
+    domains:
+      - "*"
+    corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+        - origin
+      allowMethods:
+        - "*"
+      allowOrigin:
+        - "*"
+      exposeHeaders:
+        - origin
     routes:
       - matcher:
           methods:
             - GET
-          prefix: /render/
+          prefix: /grpc-demo/
         routeAction:
           single:
             destinationSpec:
               grpc:
                 function: Render
                 parameters:
-                  path: /render/{documentId}
+                  path: /grpc-demo/{documentId}
                 package: api
                 service: HtmlService
             upstream:
-              name: CHANGEME
+              name: CHANGE_ME
               namespace: gloo-system
         routePlugins:
           # headerManipulation:
@@ -43,9 +57,27 @@ spec:
               transformationTemplate:
                 headers:
                   ":status":
-                    text: "201"
+                    text: "301"
                   location:
                     text: "https://www.google.com/"
-                body:
-                  text: "{{ document }}"
-                  # text: "<head><title>Test</title></head><body><div><p>Hello {{ document }}</p> </div> </body>"
+                # body:
+                #   text: "{{ document }}"
+                # text: "<head><title>Test</title></head><body><div><p>Hello {{ document }}</p> </div> </body>"
+      - matcher:
+          methods:
+            - GET
+          prefix: /http-demo/
+        routeAction:
+          single:
+            upstream:
+              name: CHANGE_ME
+              namespace: gloo-system
+        routePlugins:
+          transformations:
+            responseTransformation:
+              transformationTemplate:
+                headers:
+                  ":status":
+                    text: "301"
+                  location:
+                    text: "https://www.google.com/"

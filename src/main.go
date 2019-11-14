@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"strconv"
 
@@ -25,6 +27,11 @@ var (
 	// Make Channel to receive end-result
 	htmlChannel = make(chan string)
 )
+
+type Return struct {
+	Status int32
+	Msg    string
+}
 
 type htmlService struct{}
 
@@ -50,6 +57,19 @@ func render(event cloudevents.Event) {
 	htmlChannel <- "Hello Channel!"
 }
 
+func HelloServer(w http.ResponseWriter, r *http.Request) {
+	msg := Return{200, "Hello World"}
+
+	json, err := json.Marshal(msg)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(json)
+}
+
 func main() {
 
 	port, err := strconv.Atoi(os.Getenv("LISTEN_PORT"))
@@ -67,6 +87,9 @@ func main() {
 	mux := cmux.New(lis)
 	grpcLis := mux.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
 	httpLis := mux.Match(cmux.HTTP1Fast())
+
+	// Link the endpoint to the handler function.
+	http.HandleFunc("/http-demo", HelloServer)
 
 	// *************
 	// gRPC
