@@ -1,15 +1,17 @@
-# Knative Serving + gRPC + Knative Eventing + Gloo Transforms + HTML output
+# Knative Serving + Knative Eventing + gRPC/HTTP `cmux` + Gloo Transforms
 
 > **NOTE:** This repo and documentation is still under construction so errors are likely to be present
 
 This repo contains sample code intended to be used for debugging and testing Gloo's Proxy + Knative Eventing, more specifically, given the (current) limitations on Eventing not being able to handle/accept/use gRPC relying instead on HTTP.
 
-TODO
+The present code creates a KNative Service which exposes both HTTP and gRPC endpoints (with the help of [`cmux`][1]) and applies a response transformation which **should** redirect you to Google.
+
+---
 
 ## Tech Stack
 
-- [Gloo][1]
-- [Knative][2]
+- [Gloo][2]
+- [Knative][3]
 
 ## Repo Structure
 
@@ -55,7 +57,7 @@ glooctl get virtualservices
 
 ## Testing & Executing
 
-If you use Visual Studio Code and the [REST Client Extension][3], then you can use the `rest-client.http` file to execute the requests to the service, on both gRPC and HTTP endpoints
+If you use Visual Studio Code and the [REST Client Extension][4], then you can use the `rest-client.http` file to execute the requests to the service, on both gRPC and HTTP endpoints
 
 ---
 
@@ -99,6 +101,7 @@ To use Bazel to build and push a Docker image execute this command:
 bazel run //:mux_image_push --define DOCKER_REGISTRY_IMAGE_NAME=$DOCKER_REGISTRY_IMAGE_NAME
 ```
 
-[1]: https://www.solo.io/glooe
-[2]: https://knative.dev
-[3]: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+[1]: https://github.com/soheilhy/cmux
+[2]: https://www.solo.io/glooe
+[3]: https://knative.dev
+[4]: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
