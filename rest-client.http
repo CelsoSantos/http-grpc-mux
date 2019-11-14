@@ -1,0 +1,21 @@
+### Parameters
+#
+# Define protocol: 'http' or 'https'
+@protocol = http
+
+# Define the Host: URL, IP or localhost
+@host = CHANGE_ME
+
+# Define port if not HTTP or HTTPS defaults
+# @port = 443
+
+# Define the content type if required
+# @contentType = application/json
+
+###
+GET {{protocol}}://{{host}}/grpc-demo/1xmrh-lAn_gpX90MvqiDN45e3hi6oe-lRAcwDvPtg5Y4 HTTP/1.1
+# content-type: {{contentType}}
+
+###
+GET {{protocol}}://{{host}}/http-demo/ HTTP/1.1
+# content-type: {{contentType}}

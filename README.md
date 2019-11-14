@@ -11,9 +11,21 @@ TODO
 - [Gloo][1]
 - [Knative][2]
 
+## Repo Structure
+
+- `api/`: Contains the proto definitions
+- `k8s/`: Contains the `service.yaml` and `virtualservice.yaml` files to deploy onto K8s
+- `src/`: Contains the code that is executed on the container
+- `templates/`: Contains sample HTML templates to use as HTML output
+- `tooling/`:
+  - `bazel/`: Contains the bazel dependencies and configurations
+  - `docker/`: Contains the files required to build the sandbox Docker images. It also **MUST** contain you Docker Hub credentials if you intend to push images to your repo
+
+---
+
 ## Deployment
 
-In order to deploy the service into K8s execute the following command
+In order to deploy the service into K8s execute the following command:
 
 <!-- TODO -->
 ```bash
@@ -27,6 +39,7 @@ glooctl get upstreams
 ```
 
 Now you can deploy the `VirtualService` replacing the `.spec.VirtualHost.routes.matcher.routeAction.single.upstream.name` with the `Upstream` name you got on the previous step
+Alternatively, you can define the `Upstream` spec and name and use a predefined name (the one assigned to the `Upstream`)
 
 ```bash
 kubectl apply -f k8s/virtualservice.yaml
@@ -37,6 +50,12 @@ Verify the `VirtualService` was properly created and is in `Accepted` state
 ```bash
 glooctl get virtualservices
 ```
+
+---
+
+## Testing & Executing
+
+If you use Visual Studio Code and the [REST Client Extension][3], then you can use the `rest-client.http` file to execute the requests to the service, on both gRPC and HTTP endpoints
 
 ---
 
@@ -80,17 +99,6 @@ To use Bazel to build and push a Docker image execute this command:
 bazel run //:mux_image_push --define DOCKER_REGISTRY_IMAGE_NAME=$DOCKER_REGISTRY_IMAGE_NAME
 ```
 
-### Repo Structure
-
-- `api/`: Contains the proto definitions
-- `k8s/`: Contains the `service.yaml` and `virtualservice.yaml` files to deploy onto K8s
-- `src/`: Contains the code that is executed on the container
-- `templates/`: Contains sample HTML templates to use as HTML output
-- `tooling/`:
-  - `bazel/`: Contains the bazel dependencies and configurations
-  - `docker/`: Contains the files required to build the sandbox Docker images. It also **MUST** contain you Docker Hub credentials if you intend to push images to your repo
-
-
-
 [1]: https://www.solo.io/glooe
 [2]: https://knative.dev
+[3]: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
