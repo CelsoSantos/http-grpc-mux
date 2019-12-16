@@ -18,3 +18,9 @@ builds
 bazel-*
 vendor
 .DS_Store
+
+# Terraform
+
+.terraform
+*.tfstate.*
+*.tfstate

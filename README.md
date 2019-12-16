@@ -12,27 +12,69 @@ The present code creates a KNative Service which exposes both HTTP and gRPC endp
 
 - [Gloo][2]
 - [Knative][3]
+- [Terraform][4]
 
 ## Repo Structure
 
 - `api/`: Contains the proto definitions
-- `k8s/`: Contains the `service.yaml` and `virtualservice.yaml` files to deploy onto K8s
+- `gloo/`: Contains the virtual services for deployment onto K8s
+- `knative/`: Contains the Knative `Service` Spec `service.yaml` to deploy onto K8s
+- `http-grpc-mux/`: The Helm Chart that deploys the service as a K8s `Deployment` spec
 - `src/`: Contains the code that is executed on the container
 - `templates/`: Contains sample HTML templates to use as HTML output
 - `tooling/`:
   - `bazel/`: Contains the bazel dependencies and configurations
   - `docker/`: Contains the files required to build the sandbox Docker images. It also **MUST** contain you Docker Hub credentials if you intend to push images to your repo
+  - `minikube/`: Contains the scripts to setup and prepare a Minikube VM for development/testing purposes
+- `mux.tf`: The Terraform deployment for the service via the Helm Chart (*WARNING:* The Terraform Helm provider does not yet fully support Helm 3)
 
 ---
+
+## Before you start
+
+If you wish to use one the included `glooctl` binaries, set the version as an alias on your shell.
+
+```bash
+alias glooctl="$(pwd)/gloo/bin/glooctl-$(GLOO_VERSION)"
+```
+
+To unset it, simply `unalias glooctl`.
 
 ## Deployment
 
 In order to deploy the service into K8s execute the following command:
 
+### Knative Service
+
+In order to deploy the service into K8s as a Knative `Service` execute the following command:
+
 <!-- TODO -->
 ```bash
-kubectl apply -f k8s/service.yaml
+kubectl apply -f knative/service.yaml
 ```
+
+### Kubernetes Deployment + Service
+
+In order to deploy the service into K8s as a K8s `Deployment` + `Service` execute there are two options available:
+
+- Helm3
+- Terraform
+
+To use Helm directly:
+
+```bash
+helm install transforms-demo http-grpc-mux -f http-grpc-mux/values.yaml --namespace transforms-demo
+```
+
+If instead you want to use Terraform, then, from the root of the project simply init Terraform and apply:
+
+```bash
+terraform init
+
+terraform apply (OPTIONALLY: -auto-approve)
+```
+
+### Gloo Resources
 
 Once the service is deployed, use `glooctl` to get the name of the `Upstream` associated with the Knative Service on your cluster and lookup the `Upstream` on port 81 (HTTP to gRPC conversion) which should be something like `default-transforms-html-xxxx-81`
 
@@ -44,7 +86,7 @@ Now you can deploy the `VirtualService` replacing the `.spec.VirtualHost.routes.
 Alternatively, you can define the `Upstream` spec and name and use a predefined name (the one assigned to the `Upstream`)
 
 ```bash
-kubectl apply -f k8s/virtualservice.yaml
+kubectl apply -f glooctl/virtualservice-$(VERSION).yaml
 ```
 
 Verify the `VirtualService` was properly created and is in `Accepted` state
@@ -57,7 +99,7 @@ glooctl get virtualservices
 
 ## Testing & Executing
 
-If you use Visual Studio Code and the [REST Client Extension][4], then you can use the `rest-client.http` file to execute the requests to the service, on both gRPC and HTTP endpoints
+If you use Visual Studio Code and the [REST Client Extension][5], then you can use the `rest-client.http` file to execute the requests to the service, on both gRPC and HTTP endpoints
 
 ---
 
@@ -104,4 +146,5 @@ bazel run //:mux_image_push --define DOCKER_REGISTRY_IMAGE_NAME=$DOCKER_REGISTRY
 [1]: https://github.com/soheilhy/cmux
 [2]: https://www.solo.io/glooe
 [3]: https://knative.dev
-[4]: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+[4]: https://www.terraform.io/
+[5]: https://marketplace.visualstudio.com/items?itemName=humao.rest-client

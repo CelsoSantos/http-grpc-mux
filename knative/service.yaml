@@ -1,0 +1,17 @@
+apiVersion: serving.knative.dev/v1alpha1 # Current version of Knative
+kind: Service
+metadata:
+  name: transforms-html # The name of the app
+  namespace: transforms-demo # The namespace the app will use
+  labels:
+    serving.knative.dev/visibility: cluster-local
+spec:
+  template:
+    spec:
+      containers:
+        - image: docker.io/celsosantos/http-grpc-mux:latest # The URL to the image of the app
+          env:
+            - name: LISTEN_PORT
+              value: "8080"
+            - name: TEMPLATE
+              value: "simple"

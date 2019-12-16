@@ -85,8 +85,8 @@ func main() {
 
 	// Create multiplexer and listener types
 	mux := cmux.New(lis)
-	grpcLis := mux.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
-	httpLis := mux.Match(cmux.HTTP1Fast())
+	grpcLis := mux.Match(cmux.HTTP2())
+	httpLis := mux.Match(cmux.HTTP1())
 
 	// Link the endpoint to the handler function.
 	http.HandleFunc("/http-demo", HelloServer)

@@ -1,0 +1,59 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: transforms-html
+  namespace: transforms-demo
+spec:
+  # ssl_config:
+  #   secret_ref:
+  #     name: wildcard
+  #     namespace: default
+  virtualHost:
+    domains:
+      - "*"
+    options:
+      cors:
+        allowCredentials: true
+        allowHeaders:
+          - origin
+        allowMethods:
+          - "*"
+        allowOrigin:
+          - "*"
+        exposeHeaders:
+          - origin
+    routes:
+      - matchers:
+          - prefix: /grpc-demo/
+            methods:
+              - GET
+        routeAction:
+          single:
+            destinationSpec:
+              grpc:
+                function: Render
+                parameters:
+                  path: /grpc-demo/{documentId}
+                package: api
+                service: HtmlService
+            upstream:
+              name: transforms-demo-http-grpc-mux-80
+              namespace: gloo-system
+      - matchers:
+          - prefix: /http-demo/
+            methods:
+              - GET
+        routeAction:
+          single:
+            upstream:
+              name: transforms-demo-http-grpc-mux-80
+              namespace: gloo-system
+        # routePlugins:
+        #   transformations:
+        #     responseTransformation:
+        #       transformationTemplate:
+        #         headers:
+        #           ":status":
+        #             text: "301"
+        #           location:
+        #             text: "https://www.google.com/"

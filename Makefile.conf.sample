@@ -46,3 +46,33 @@ DOCKER_REGISTRY_IMAGE_NAME := registry:latest
 
 # Docker registry container port
 DOCKER_REGISTRY_PORT := 5000
+
+# -----------------------------------------------------------------------------
+# Minikube Development sandbox setttings
+# -----------------------------------------------------------------------------
+
+MK_SANDBOX_K8S_VERSION := v1.15.4
+
+# Development sandbox Docker image and container names
+MK_SANDBOX_EXTRA_CONFIGS := apiserver.enable-admission-plugins="LimitRanger,NamespaceExists,NamespaceLifecycle,ResourceQuota,ServiceAccount,DefaultStorageClass,MutatingAdmissionWebhook"
+
+# Gloo Version
+GLOO_VERSION := 0.20.11
+
+# Knative Serving Version to install
+MK_KNATIVE_SERVING_VERSION := 0.8.1
+
+# Knative Eventing Version to install
+MK_KNATIVE_EVENTING_VERSION := 0.8.0
+
+# Operator Framework Version
+MK_OPERATOR_FRAMEWORK_VERSION := 0.10.0
+
+# Strimzi Operator Version
+MK_STRIMZI_OPERATOR_VERSION := 0.13.0
+
+# Cert-Manager Version & Settings
+MK_CERT_MGMR_VERSION := 0.10.0
+MK_CERT_MGMR_ZONE := us-east-2
+MK_CERT_MGMR_ACCESS_KEY := AKIAWWPYT63T5ZETQESI
+MK_CERT_MGMR_SECRET_ACCESS_KEY := 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

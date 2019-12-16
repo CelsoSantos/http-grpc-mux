@@ -42,11 +42,16 @@ define display_help_message
 	@echo "$(ccblue)USAGE:$(ccend)"
 	@echo "  make $(ccpink)COMMAND$(ccend) | $(ccpink)COMPONENT$(ccend)"
 	@echo ""
-
 	@echo "$(ccblue)Build Commands:$(ccend)"
 	@echo "  $(ccpink)setup$(ccend)         - create sandbox container"
 	@echo "  $(ccpink)work$(ccend)          - start sandbox container and ssh into its '/workspace'"
 	@echo "  $(ccpink)update-repos$(ccend)  - update repositories when updating 'go.mod'"
+	@echo ""
+	@echo "$(ccblue)Development Commands:$(ccend)"
+	# @echo "  $(ccpink)install-minikube$(ccend) - install minikube"
+	@echo "  $(ccpink)work-minikube$(ccend)    - start minikube"
+	@echo "  $(ccpink)setup-minikube$(ccend)   - setup minikube"
+	@echo "  $(ccpink)setup-components$(ccend) - setup minikube components (requires start first)"
 	@echo ""
 	@echo "$(ccblue)Clean Commands:$(ccend)"
 	@echo "  $(ccpink)clean$(ccend)         - clean up project's binaries and intermediate files"
@@ -54,6 +59,40 @@ define display_help_message
 	@echo "  $(ccpink)purge_docker$(ccend)  - purge Docker dangling images"
 	@echo ""
 endef
+
+# Start virtualized Kubernetes development environment (or sandbox)
+#
+# So that to boot up a local, single-node Kubernetes cluster for testing
+# and development purposes without polluting the production environments
+define start_development_mk_sandbox
+	@minikube start \
+		--extra-config=$(MK_SANDBOX_EXTRA_CONFIGS)
+endef
+
+# Build virtualized Kubernetes development environment (or sandbox)
+#
+# So that to create a local, single-node Kubernetes cluster for testing
+# and development purposes without polluting the production environments
+define setup_development_mk_sandbox
+	@./tooling/minikube/setup-minikube.sh \
+		$(MK_SANDBOX_K8S_VERSION)
+endef
+
+# Build virtualized Kubernetes development environment (or sandbox)
+#
+# So that to create a local, single-node Kubernetes cluster for testing
+# and development purposes without polluting the production environments
+define setup_development_sandbox_components
+	@./tooling/minikube/setup-cluster.sh \
+		$(GLOO_VERSION) \
+		$(MK_KNATIVE_SERVING_VERSION) \
+		$(MK_KNATIVE_EVENTING_VERSION) \
+		${MK_CERT_MGMR_VERSION} \
+		${MK_CERT_MGMR_ZONE} \
+		${MK_CERT_MGMR_ACCESS_KEY} \
+		${MK_CERT_MGMR_SECRET_ACCESS_KEY}
+endef
+
 
 # Build containerized development environment (or sandbox)
 #
@@ -250,6 +289,20 @@ not_in_sandbox:
 # Show help message
 help: not_in_sandbox
 	$(call display_help_message)
+
+# Install development sandbox (Minikube - for daily work)
+work-minikube: not_in_sandbox
+	@echo "$(ccgreen)[INFO]$(ccend) Setting up Kubernetes development sandbox ..."
+	$(call start_development_mk_sandbox)
+
+# Install development sandbox (Minikube - for daily work)
+setup-minikube: not_in_sandbox
+	@echo "$(ccgreen)[INFO]$(ccend) Setting up Kubernetes development sandbox ..."
+	$(call setup_development_mk_sandbox)
+
+setup-components: not_in_sandbox
+	@echo "$(ccgreen)[INFO]$(ccend) Setting up Kubernetes development sandbox components..."
+	$(call setup_development_sandbox_components)
 
 # Setup development environment
 setup: not_in_sandbox

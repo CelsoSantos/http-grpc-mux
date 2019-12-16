@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "http-grpc-mux.fullname" . }}
+  labels:
+{{ include "http-grpc-mux.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: grpc-http-grpc-mux
+  selector:
+    app.kubernetes.io/name: {{ include "http-grpc-mux.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

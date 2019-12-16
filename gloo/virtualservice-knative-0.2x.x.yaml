@@ -1,0 +1,56 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: transforms-html-knative
+  namespace: transforms-demo
+spec:
+  # ssl_config:
+  #   secret_ref:
+  #     name: wildcard
+  #     namespace: default
+  virtualHost:
+    domains:
+      - "*"
+    corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+        - origin
+      allowMethods:
+        - "*"
+      allowOrigin:
+        - "*"
+      exposeHeaders:
+        - origin
+    routes:
+      - matcher:
+          prefix: /grpc-demo-knative/
+          methods:
+            - GET
+        routeAction:
+          single:
+            destinationSpec:
+              grpc:
+                function: Render
+                parameters:
+                  path: /grpc-demo-knative/{documentId}
+                package: api
+                service: HtmlService
+            upstream:
+              name: CHANGE_ME
+              namespace: gloo-system
+      - matcher:
+          prefix: /http-demo-knative/
+        routeAction:
+          single:
+            upstream:
+              name: CHANGE_ME
+              namespace: gloo-system
+        # routePlugins:
+        #   transformations:
+        #     responseTransformation:
+        #       transformationTemplate:
+        #         headers:
+        #           ":status":
+        #             text: "301"
+        #           location:
+        #             text: "https://www.google.com/"
